@@ -4,7 +4,7 @@ const isAdminRole = (req=request,res=response,next) =>{
 
     if (!req.user){
         return res.status(500).json({
-            msg: 'se quiere verifica el role sin validar rol primero'
+            msg: 'Se quiere verificar el role sin validar token primero'
         });
     }
     
@@ -20,7 +20,29 @@ const isAdminRole = (req=request,res=response,next) =>{
 
 }
 
+const hasRole = (...roles) =>{
+
+    return (req,res = response, next) =>{
+
+        if (!req.user){
+            return res.status(500).json({
+                msg: 'Se quiere verificar el role sin validar token primero'
+            });
+        }
+        
+        if (!roles.includes(req.user.role)){
+            return res.status(401).json({
+                msg: `El servicio requiere uno de estos roles ${roles}`
+            })
+        }
+
+        next();
+
+    }
+}
+
 
 module.exports = {
-    isAdminRole
+    isAdminRole,
+    hasRole
 }
